@@ -1,4 +1,7 @@
 /*
+
+RADI 
+
 1. Napisati program koji prvo pročita koliko redaka ima datoteka, tj. koliko ima studenata
 zapisanih u datoteci. Nakon toga potrebno je dinamički alocirati prostor za niz struktura
 studenata (ime, prezime, bodovi) i učitati iz datoteke sve zapise. Na ekran ispisati ime,
@@ -9,7 +12,9 @@ relatvan_br_bodova = br_bodova/max_br_bodova*100
 */
 #include<stdio.h>
 #include<stdlib.h>
-#define MAX_ZNAKOVA 100
+#include <string.h>
+#define MAX_ZNAKOVA (128)
+#define MAX_LINE (1024)
 
 typedef struct studenti
 {
@@ -27,8 +32,8 @@ void IspisStudenata(student* NizStudenata, int brRedaka);
 int IzbrojiRetke(char* datoteka)
 {
     int brRedaka=0;
-    char buffer[1000] = { 0 };
     FILE *pDat=NULL;
+    char buffer[MAX_LINE] = { 0 };
 
     pDat=fopen(datoteka, "r");
     if (!pDat) 
@@ -38,7 +43,7 @@ int IzbrojiRetke(char* datoteka)
 	}
     while(!feof(pDat))
     {   
-        fgets(buffer, 1000, pDat);
+        fgets(buffer, MAX_LINE, pDat);
         brRedaka++;
     }
     
@@ -51,9 +56,9 @@ student* AlocirajMemorijuZaStudente (int brRedaka, char * datoteka)
     int i;
     FILE *pDat=NULL;
     student *NizStudenata=NULL;
-
-    pDat=fopen(datoteka, "r");
+    
     NizStudenata=(student*)malloc(brRedaka*sizeof(student));
+    pDat=fopen(datoteka, "r");
 
     if (!pDat)
 	{
@@ -61,10 +66,9 @@ student* AlocirajMemorijuZaStudente (int brRedaka, char * datoteka)
 		free(NizStudenata);
 		return NULL;
 	}
-    for(i=0 ; i<brRedaka ; i++)
+    for(i=0; i<brRedaka; i++)
     {
         fscanf(pDat, " %s %s %lf", NizStudenata[i].ime, NizStudenata[i].prezime, &NizStudenata[i].br_bodova);
-        
     }
 
     fclose(pDat);
@@ -81,16 +85,14 @@ void IspisStudenata(student* NizStudenata, int brRedaka)
         if(NizStudenata[i].br_bodova > max_br_bodova)
                 max_br_bodova = NizStudenata[i].br_bodova;
 
-    printf("IME\tPREZIME\tBR BODOVA\tRELATIVAN BR BODOVA");  
+    printf("IME\tPREZIME\tBR BODOVA\tRELATIVAN BR BODOVA\n");  
     for(i=0 ; i<brRedaka ; i++)
     {
         relativan_br_bodova = NizStudenata[i].br_bodova / max_br_bodova * 100;
         printf("%s\t%s\t%lf\t%lf\n", NizStudenata[i].ime, NizStudenata[i].prezime, NizStudenata[i].br_bodova, relativan_br_bodova);
     }
 
-
 }
-
 
 int main()
 {
