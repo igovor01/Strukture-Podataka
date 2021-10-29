@@ -178,7 +178,6 @@ Position FindBySurname(Position first, char* surname)
 
     return NULL;
 }
-//mislim da su sve ove iduce 2 funkcije krive
 Position FindBefore(Position wantedPerson, Position head){
     //trazimo prethodnika kako bi izbrisali neki element
 
