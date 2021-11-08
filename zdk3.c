@@ -42,8 +42,8 @@ int AddListAfter(Position head, char* afterThisSurname, char *name, char *surnam
 int AddListBefore(Position head, char* beforeThisSurname, char *name, char *surname, int birthYear);
 int WriteIntoFile(Position head, char *datoteka);
 int ReadFromFile(Position head, char *datoteka);
-int Menu(Position head);
 int SortedInput(Position head, Position newPerson);
+int Menu(Position head);
 
 
 int main(int argc, char** argv){
