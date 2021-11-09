@@ -200,7 +200,6 @@ int SortedInput(Position head, Position newElement)
     return EXIT_SUCCESS;
 }
 
-
 int InsertAfter(Position pos, Position newElement)
 {
     newElement->next=pos->next;
