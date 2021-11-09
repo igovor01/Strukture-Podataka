@@ -222,10 +222,15 @@ int DeleteAfter(Position deleteAfterThis)
 int PrintList(char *kojiPolinom, Position head)
 {
     Position temp= head;
-    printf("\nPrintamo rezultate operacije: %s\n", kojiPolinom);
-    printf("KOEF x^EKSP\n");
-    while(temp->next!=NULL){
-        printf("%d x^%d\n", temp->next->koef, temp->next->eksp);
+    printf("\nPrintamo rezultate operacije: %s\nf(x) = ", kojiPolinom);
+    while(temp->next!=NULL)
+    {
+        if(temp->next-> next== NULL) // ako je iduci od ovog trenutnog zadnji, onda nemoj pisat nista, novi red, kraj je.
+        printf("%d*x^%d\n", temp->next->koef, temp->next->eksp);
+        else if(temp->next->next->koef < 0) //ako je iduci od ovog kojeg radimo, njegov koeficijent negativan, nemoj napisat + iza
+        printf("%d*x^%d  ", temp->next->koef, temp->next->eksp);
+        else
+        printf("%d*x^%d  +  ", temp->next->koef, temp->next->eksp);
         temp=temp->next;
     }
     return EXIT_SUCCESS;
