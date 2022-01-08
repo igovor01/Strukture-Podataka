@@ -19,6 +19,7 @@ dijela zadatka.
 #include<stdlib.h>
 #include<string.h>
 #include<time.h>
+#define MAX_LINE (1024)
 
 struct _Tree;
 typedef struct _Tree * Position;
@@ -35,16 +36,15 @@ typedef struct _List{
     ListPosition next;
 }List;
 
-
-Position insert(int number, Position root);
+Position insert(int number, Position current);
 int PrintInOrder(Position current);
 int replace(Position current);
-int WriteInFile(ListPosition current, char* filename);
 ListPosition FindLastInList(ListPosition head);
+int AddTreeToList(ListPosition head, Position current);
 int AddElementToList(ListPosition head, int number);
-int AddToList(ListPosition head, int number);
-int PrintList(ListPosition head);
+int WriteInFile(ListPosition head, char* filename);
 int DeleteAll(ListPosition head);
+Position InitializeTree(Position current);
 
 //pod a
 Position insert(int number, Position current)
@@ -76,6 +76,8 @@ int PrintInOrder(Position current)
     printf("%d ", current->element);
     PrintInOrder(current->right);
 }
+
+
 // pod b
 int replace(Position current)
 {
@@ -95,18 +97,15 @@ int replace(Position current)
 
 //pod c, pisanje u datoteku
 
-
-
-ListPosition FindLastInList(ListPosition head){
+ListPosition FindLastInList(ListPosition head)
+{
 
     ListPosition temp = NULL;
     temp = head;
     while(temp->next != NULL){
         temp = temp->next;
-    }
-        
+    }   
     return temp;
-
 }
 
 
@@ -114,6 +113,7 @@ int AddTreeToList(ListPosition head, Position current)
 {
     if(current == NULL)
         return 0;
+
     AddTreeToList(head, current->left);
 
     AddElementToList(head, current->element);
@@ -157,15 +157,6 @@ int WriteInFile(ListPosition head, char* filename)
     return 0;
 }
 
-int PrintList(ListPosition head)
-{
-    while(head->next!= NULL)
-    {
-        printf("%d ", head->next->number);
-        head=head->next;
-    }
-    return 0;
-}
 
 int DeleteAll(ListPosition head)
 {
@@ -175,102 +166,85 @@ int DeleteAll(ListPosition head)
         temp = head->next;
         head->next=temp->next;
         free(temp);
-
     }
 }
-// pod c, rand
 
-int RandomNumbers(Position root)
+Position InitializeTree(Position current)
 {
-    int i=0;
-    int a;
-    srand((unsigned) time(NULL));
-    a=rand()%(90-10+1) + 10;
-    root = insert(a, root);
-    printf("Rand is: %d\n", a);
-    return 0;
+    if(current != NULL)
+    {
+        InitializeTree(current->left);
+        InitializeTree(current->right);
+        free(current);
+    }
+    return NULL;
 }
+
+
 
 int main()
 {
+    srand((unsigned) time(NULL));
+
     int array[] = { 2, 5, 7, 8, 11, 1, 4, 2, 3, 7 };
     int i = 0, choice = 0, num = 0;
-    char filename[1000];
-    int *newArray;
+    char filename[MAX_LINE] = { 0 };
     Position root = NULL;
     List head = {.number = 0, .next = NULL};
-/*
-    for(i = 0; i < sizeof(array)/sizeof(int); i++)
-    {
-        root = insert(array[i], root);
-    }
-    //pod a
-    PrintInOrder(root);
-    AddTreeToList(&head, root);
-    printf("\n");
-    WriteInFile(&head, "dat.txt");
-
-    DeleteAll(&head);
-
-    //pod b
-    replace(root);
-    PrintInOrder(root);
-    AddTreeToList(&head, root);
-    WriteInFile(&head, "dat.txt");
-
-    //pod c
-    for(i = 0; i < 10; i++)
-    {
-        //printf("%d", root->left);
-        root = root = insert(rand() %(90-10+1) +10, root);
-    }
-    PrintInOrder(root);
-*/
 
     while(1){
     printf(
-    "1 - Insert default array ( 2, 5, 7, 8, 11, 1, 4, 2, 3, 7) into the binary tree\n"
+    "\n1 - Insert default array ( 2, 5, 7, 8, 11, 1, 4, 2, 3, 7) into the binary tree\n"
     "2 - Replaced every element of the default array with sum of the element's original left&right children\n"
     "3 - Inorder Print in the file\n"
     "4 - Create new tree with random numbers <10, 90>\n"
     "0 - Exit\n"
-    "Your choice: \n");
+    "Your choice: ");
 
     scanf("%d", &choice);
     switch (choice)
     {
     case 1:
+        root = InitializeTree(root);
         for(i = 0; i < sizeof(array)/sizeof(int); i++)
         {
             root = insert(array[i], root);
         }
+        printf("Print In Order : ");
         PrintInOrder(root);
-        AddTreeToList(&head, root);
         printf("\n");
         break;
     case 2:
         replace(root);
+        printf("Print In Order : ");
         PrintInOrder(root);
-        AddTreeToList(&head, root);
+        printf("\n");
         break;
     case 3:
         printf("Insert filename: ");
-        scanf("%s", filename);
+        scanf("%s", filename); 
+        AddTreeToList(&head, root); 
         WriteInFile(&head, filename);
         DeleteAll(&head);
         break;
     case 4: 
+        root = InitializeTree(root);
         printf("Number of nodes in the new binary tree: ");
         scanf("%d", &num);
         for(i = 0; i < num; i++)
-            root = root = insert(rand() %(90-10+1) +10, root);
+            root = insert( rand() %(90-10+1) +10 , root );
+        printf("Print In Order : ");
         PrintInOrder(root);
+        printf("\n");
+        break;
     case 0: 
         return 0;
     default:
-        return 0;
+        break;
     }
-}
+    
+    }
+
 }
 
 
