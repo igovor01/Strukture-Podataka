@@ -1,0 +1,4 @@
+Bruxelles 144784
+Brugge 117224
+Antwerpen 461496
+Gent 233120	
