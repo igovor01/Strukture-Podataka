@@ -193,7 +193,6 @@ int PrintTreeInOrder(PositionTree current)
 
 int PronadiGradoveSViseStanovnika(char* drzava, int broj, PositionList head)
 {
-    //printf("\nGlavna funk - pocetak\n");
     PositionList odabranaDrzava = PronadiDrzavu(drzava, head);
     int max = 0;
     if(odabranaDrzava == NULL)
@@ -211,7 +210,6 @@ int PronadiGradoveSViseStanovnika(char* drzava, int broj, PositionList head)
     printf("\nGradovi u %s s vise od %d stanovnika:\n", odabranaDrzava->drzava, broj);
     PronadiPrintajGradove(broj, odabranaDrzava->root);
 
-    //printf("\nGlavna funk - kraj\n");
     return 0;
 }
 
@@ -229,24 +227,20 @@ int TraziMax(PositionTree current)
 
 PositionList PronadiDrzavu(char* drzava, PositionList head)
 {
-    //printf("\nPronadi drzavu - pocetak\n");
     PositionList temp = head;
     while(temp->next!=NULL && strcmp(temp->next->drzava,drzava) != 0)
         temp=temp->next;
-    //printf("\nPronadi drzavu - kraj\n");
     return temp->next;
 }
 
 int PronadiPrintajGradove(int broj, PositionTree current)
 {
-    //printf("\nPronadi grad - pocetak\n");
     if(current == NULL)
         return 0;
     PronadiPrintajGradove(broj, current->left);
     if(current->brStanovnika >= broj)
         printf("  %s --- %d\n", current->grad, current->brStanovnika);
     PronadiPrintajGradove(broj, current->right);
-    //printf("\nPronadi grad - pocetak\n");
 
     return 0;
 }

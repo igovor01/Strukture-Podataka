@@ -3,7 +3,6 @@
 #include<string.h>
 #define MAX_LINE (1024)
 
-//Puno gresaka, ujutro
 
 //b) stablo država sortirano po nazivu, svaki čvor stabla sadrži vezanu listu gradova sortiranu po broju stanovnika, zatim po nazivu grada.
 
