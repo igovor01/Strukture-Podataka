@@ -4,3 +4,8 @@
 - 3.zadatak
 - 4.zadatak
 - 5.zadatak
+- 6.zadatak
+- 7.zadatak
+- 8.zadatak
+- 9.zadatak
+- 10.zadatak
