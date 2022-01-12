@@ -1,10 +1,11 @@
 /*
+
 8. Napisati program koji omogućava rad s binarnim stablom pretraživanja. Treba
 omogućiti unošenje novog elementa u stablo, ispis elemenata (inorder, preorder, postorder i
 level order), brisanje i pronalaženje nekog elementa.
+
 */
 
-//popravit cu + level order
 
 #include<stdio.h>
 #include<stdlib.h>
@@ -18,6 +19,15 @@ typedef struct _Tree {
     Position R;
 }Tree;
 
+struct _Queue;
+typedef struct _Queue *PositionQueue;
+typedef struct _Queue{
+    Position element;
+    PositionQueue next;
+}Queue;
+
+
+
 Position FindMin(Position pos);
 //Position FindMax(Position pos);
 Position CreateElement(int num);
@@ -29,6 +39,12 @@ int printPreOrder(Position current);
 int printPostOrder(Position current);
 int printLevelOrder(Position current);
 int Menu(Position root);
+
+int PushToQueue(Position current, PositionQueue head);
+int PopFromQueue(PositionQueue head);
+PositionQueue FindLast(PositionQueue head);
+
+
 
 
 Position FindMin(Position pos)
@@ -140,7 +156,12 @@ int printPreOrder(Position current)
 
 	return 0;
 }
-
+//unos: 3 1 6 2 4 9
+//  	    3
+//     1         6
+//      2      4   9
+// pre order : 3 1 2 6 4 9
+// post order: 2 1 4 9 6 3
 int printPostOrder(Position current)
 {
 	if (current == NULL) 
@@ -153,23 +174,84 @@ int printPostOrder(Position current)
 	return 0;
 }
 
-/*int printLevelOrder(Position current)
+int printLevelOrder(Position root)
 {
-    //nije napisano
-	if (current == NULL) 
-		return 0; 
-    
-	printf("%d ", current->El);
+    if (root == NULL)
+		return 0;
+    Queue headOriginal = {.element = NULL, .next = NULL};
+    PositionQueue head = &headOriginal; 
+    Position current = NULL;
+	
+    PushToQueue(root, head);
 
+    while(head->next != NULL)
+    {
+        current = head->next->element;
+        printf("%d ", current->El);
+
+        if(current->L != NULL)
+        {
+            PushToQueue(current->L, head);
+        }
+        if(current->R != NULL)
+        {
+            PushToQueue(current->R, head);
+        }
+        PopFromQueue(head);
+        
+    }
+    
 	return 0;
-}*/
+}
+
+int PushToQueue(Position current, PositionQueue head)
+{
+    PositionQueue new = NULL;
+    PositionQueue last = NULL;
+    new = (PositionQueue)malloc(sizeof(Queue));
+    if(!new)
+    {
+        printf("Failed to allocate memory");
+        return EXIT_FAILURE;
+    }
+    new->element = current;
+    last =FindLast(head);
+
+    new->next= last->next;
+    last->next = new;
+
+    return EXIT_SUCCESS;
+    
+}
+
+int PopFromQueue(PositionQueue head)
+{
+    PositionQueue toDelete = head->next;
+	
+    head->next=toDelete->next;
+    free(toDelete);
+
+    return EXIT_SUCCESS;
+}
+
+PositionQueue FindLast(PositionQueue head)
+{
+    PositionQueue temp = head;
+    while(temp->next!=NULL)
+        temp=temp->next;
+    return temp;
+}
 
 int Menu(Position root)
 {
     int number, n, i;
-    int odabir, broj;
+    int odabir;
     Position pozicija = NULL;
-    printf("1 - Unos niza brojeva u stablo\n"
+
+    while (1)
+    {
+
+    printf("\n1 - Unos niza brojeva u stablo\n"
     "2 - Unos jednog broja u stablo\n"
     "3 - Brisanje elementa iz stabla\n"
     "4 - Trazenje elementa u stablu\n"
@@ -182,7 +264,7 @@ int Menu(Position root)
     printf("Vas odabir: ");
     scanf("%d", &odabir);
     printf("\n");
-
+    
     switch (odabir)
     {
     case 1:
@@ -191,25 +273,27 @@ int Menu(Position root)
 		for (i = 0; i < n; i++)
 		{
 			printf("%d. broj: ", i + 1);
-			scanf("%d",&number);
+			scanf("%d", &number);
             root = AddNumberToTheTree(number, root);
-
 		}
         break;
     case 2:
         printf("Unesite element: ");
-		scanf("%d",&number);
+		scanf("%d", &number);
         root = AddNumberToTheTree(number, root);
         break;
     case 3:
         printf("Element koji zelite obrisati :");
-        scanf("%d", &broj);
-        root = DeleteElement(broj, root);
+        scanf("%d", &number);
+        root = DeleteElement(number, root);
         break;
     case 4:
         printf("Element koji zelite pronaci:");
-        scanf("%d", &broj);
-        pozicija = FindElement(broj, root);
+        scanf("%d", &number);
+        if(FindElement(number, root) != NULL)
+            printf("Element %d je naden u stablu.", number );
+        else
+            printf("Element %d nije naden u stablu.", number );
         break;
     case 5:  
         printf("Ispis stabla, in-order: ");
@@ -225,22 +309,23 @@ int Menu(Position root)
         break;
     case 8:  
         printf("Ispis stabla, level-order: ");
-        //printLevelOrder(root);
+        printLevelOrder(root);
         break;
     case 0:
         return 0;
     default:
         break;
     }
+
+    }
+    return 0;
 }
 
 int main()
 {
-    Tree root = {.El = 0, .L = NULL, .R = NULL};
-    //Position root = NULL;
-    int flag=1;
-    while(flag!=0){
-        flag= Menu(&root);
-    }
+    //Tree root = {.El = 0, .L = NULL, .R = NULL};
+    Position root = NULL;
+    Menu(root);
+    
 
 }
