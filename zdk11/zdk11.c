@@ -51,6 +51,8 @@ int PronadiPrintajGradove(int broj, PositionTree current);
 int HashTablica(List HashTabl[],PositionList new);
 int HashBroj(char* drzava);
 
+int DeleteList(PositionList head);
+int DeleteTree(PositionTree current);
 
 int ReadFromFile(char *filename, PositionList head, List HashTabl[])
 {
@@ -288,6 +290,32 @@ PositionList InitializeList()
 
 } 
 
+int DeleteList(PositionList head)
+{
+    PositionList delete = NULL;
+
+    while(head->next!=NULL)
+    {
+        delete = head->next;
+        DeleteTree(delete->root);
+        head->next = delete->next;
+        free(delete);
+    }
+
+    return 0;
+}
+
+int DeleteTree(PositionTree current)
+{
+    if(current == NULL)
+        return 0;
+    DeleteTree(current->left);
+    DeleteTree(current->right);
+    free(current);
+
+    return 0;
+}
+
 int main()
 {
     List head = { .drzava = 0 ,  .root = NULL, .next = NULL };
@@ -317,6 +345,11 @@ int main()
     printf("Unesite broj: ");
     scanf("%d", &broj);
     PronadiGradoveSViseStanovnika(drzava, broj, HashTabl);
+	
+	for (int i = 0; i < HASH_SIZE; i++)
+	{
+        	DeleteList(&HashTabl[i]);
+	}
     return 0;
 }
 
